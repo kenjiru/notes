@@ -14,14 +14,16 @@ YUI_config = {
             combine: false,
 
             modules: {
-                'notes-app' : {}
+                'notes-app' : {},
+                'dropbox-demo' : {}
             }
         },
         ExternalModules : {
             combine : false,
             modules : {
                 'dropbox' : {
-                    src : "//cdnjs.cloudflare.com/ajax/libs/dropbox.js/0.10.1/dropbox.min.js"
+                    async: false,
+                    fullpath : "//cdnjs.cloudflare.com/ajax/libs/dropbox.js/0.10.1/dropbox.min.js"
                 }
             }
         }

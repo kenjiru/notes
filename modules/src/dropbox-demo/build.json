@@ -1,0 +1,13 @@
+{
+    "name": "dropbox-demo",
+    "builds": {
+        "dropbox-demo": {
+            "jsfiles": [
+                "dropbox-demo.js"
+            ],
+            "config" : {
+                "use" : [ "base", "dropbox" ]
+            }
+        }
+    }
+}
