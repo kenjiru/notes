@@ -1,0 +1,15 @@
+{
+    "name": "notes-app",
+    "builds": {
+        "notes-app": {
+            "jsfiles": [
+                "note-view.js",
+                "home-view.js",
+                "app.js"
+            ],
+            "config" : {
+                "use" : [ "base", "node", "app" ]
+            }
+        }
+    }
+}
