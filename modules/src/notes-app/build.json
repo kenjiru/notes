@@ -4,12 +4,12 @@
         "notes-app": {
             "jsfiles": [
                 "login-view.js",
-                "list-view.js",
+                "search-view.js",
                 "note-view.js",
                 "app.js"
             ],
             "config" : {
-                "use" : [ "base", "node", "app" ]
+                "use" : [ "base", "node", "app", "button", "dropbox-proxy" ]
             }
         }
     }
