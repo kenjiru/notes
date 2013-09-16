@@ -15,6 +15,7 @@ YUI_config = {
 
             modules: {
                 'notes-app' : {},
+                'dropbox-proxy' : {},
                 'dropbox-demo' : {}
             }
         },
