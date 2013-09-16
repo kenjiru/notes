@@ -1,0 +1,13 @@
+{
+    "name": "dropbox-proxy",
+    "builds": {
+        "dropbox-proxy": {
+            "jsfiles": [
+                "dropbox-proxy.js"
+            ],
+            "config" : {
+                "use" : [ "base", "dropbox" ]
+            }
+        }
+    }
+}
