@@ -1,7 +1,11 @@
 Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
     views : {
-        'home' : {
-            type : Y.notes.HomeView,
+        'login' : {
+            type : Y.notes.LoginView,
+            preserve : true
+        },
+        'search' : {
+            type : Y.notes.SearchView,
             preserve : true
         },
         'note' : {
@@ -11,9 +15,19 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
         }
     },
 
-    handleHome : function(req) {
-        console.log('home');
+    handleRoot : function(req) {
+        console.log('root');
         this.showView('home');
+    },
+
+    handleLogin : function(req) {
+        console.log('login');
+        this.showView('login');
+    },
+
+    handleSearch : function(req) {
+        console.log('search');
+        this.showView('search');
     },
 
     handleNote : function(req) {
@@ -30,8 +44,14 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
             value : [
                 {
                     path : '/',
-                    callbacks : 'handleHome'
+                    callbacks : 'handleRoot'
                 }, {
+                    path : '/login',
+                    callbacks : 'handleLogin'
+                }, {
+                    path : '/search',
+                    callbacks : 'handleSearch'
+                } , {
                     path : '/note',
                     callbacks : 'handleNote'
                 }
