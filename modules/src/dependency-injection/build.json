@@ -1,0 +1,13 @@
+{
+    "name" : "dependency-injection",
+    "builds" : {
+        "dependency-injection" : {
+            "jsfiles" : [
+                "dependency-injection.js"
+            ],
+            "config" : {
+                "use" : [ "base" ]
+            }
+        }
+    }
+}
