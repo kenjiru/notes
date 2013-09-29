@@ -1,5 +1,10 @@
 Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
+    _dropboxProxy : null,
     _loginButton : null,
+
+    initializer : function() {
+        this._dropboxProxy = Y.di.inject('DropboxProxy');
+    },
 
     render : function() {
         var container = this.get('container'),
@@ -23,6 +28,6 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
 
     _login : function() {
         console.log('login cliked!');
-        Y.notes.dropboxProxy.authenticate();
+        this._dropboxProxy.authenticate();
     }
 });

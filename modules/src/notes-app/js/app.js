@@ -1,4 +1,8 @@
+console.log('notes-app loaded!');
+
 Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
+    _dropboxProxy : null,
+
     views : {
         'login' : {
             type : Y.notes.LoginView,
@@ -15,9 +19,14 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
         }
     },
 
+    initializer : function() {
+        this._dropboxProxy = Y.di.inject('DropboxProxy');
+    },
+
     handleRoot : function(req) {
         console.log('root');
-        if (Y.notes.dropboxProxy.isAuthenticated()) {
+
+        if (this._dropboxProxy.isAuthenticated()) {
             this.showView('search');
         } else {
             this.showView('login');

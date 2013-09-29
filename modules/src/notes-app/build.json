@@ -9,7 +9,11 @@
                 "app.js"
             ],
             "config" : {
-                "use" : [ "base", "node", "app", "button", "dropbox-proxy" ]
+                "use" : [
+                    "app",
+                    "button",
+                    "dependency-injection"
+                ]
             }
         }
     }
