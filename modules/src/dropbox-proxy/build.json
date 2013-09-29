@@ -6,7 +6,10 @@
                 "dropbox-proxy.js"
             ],
             "config" : {
-                "use" : [ "base", "dropbox" ]
+                "use" : [
+                    "base",
+                    "dropbox"
+                ]
             }
         }
     }

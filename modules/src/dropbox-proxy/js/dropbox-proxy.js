@@ -1,5 +1,5 @@
 // this class hidden from the rest of the modules
-var DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
+Y.namespace('notes').DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
     _client : null,
     _isAuthenticated : false,
 
@@ -43,6 +43,3 @@ var DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
         console.log(error);
     }
 });
-
-// the only object exposed
-Y.namespace('notes').dropboxProxy = new DropboxProxy();
