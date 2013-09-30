@@ -7,10 +7,6 @@ Y.namespace('notes').DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
         this._client = new Dropbox.Client({
             key: "yuq3vtwkkvqnaty"
         });
-
-        this._client.onAuthStepChange = function(ev){
-            console.log('onAuthStepChange');
-        };
     },
 
     isAuthenticated : function(callback, context) {
@@ -30,20 +26,29 @@ Y.namespace('notes').DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
         });
     },
 
-    authenticate : function() {
+    authenticate : function(callback, context) {
         this._client.authDriver(new Dropbox.AuthDriver.Popup({
             receiverUrl: "http://localhost:8080/oauth_receiver.html"}));
 
         this._client.authenticate(function(error, client) {
             if (error) {
+                this._isAuthenticated = false;
                 this._handleError(error);
-                return;
+            } else {
+                this._isAuthenticated = true;
             }
 
-            this._isAuthenticated = true;
+            callback.call(context, {
+                authenticated : this._isAuthenticated
+            })
+        });
+    },
 
-            // client is a Dropbox.Client instance that you can use to make API calls.
-            console.log('authentication successful!');
+    signOut : function(callback, context) {
+        this._client.signOut(null, function(error){
+            callback.call(context, {
+                success : !error
+            });
         });
     },
 
