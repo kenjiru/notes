@@ -8,6 +8,14 @@ Y.namespace('notes').DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
             key: "yuq3vtwkkvqnaty"
         });
 
+        this._client.onAuthStepChange = function(ev){
+            console.log('onAuthStepChange');
+        };
+    },
+
+    isAuthenticated : function(callback, context) {
+        context = context || null;
+
         this._client.authenticate({interactive: false}, function(error, client) {
             if (error) {
                 return this._handleError(error);
@@ -15,6 +23,10 @@ Y.namespace('notes').DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
             if (client.isAuthenticated()) {
                 this._isAuthenticated = true;
             }
+
+            callback.call(context, {
+                authenticated : this._isAuthenticated
+            });
         });
     },
 
@@ -33,10 +45,6 @@ Y.namespace('notes').DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
             // client is a Dropbox.Client instance that you can use to make API calls.
             console.log('authentication successful!');
         });
-    },
-
-    isAuthenticated : function() {
-        return this._isAuthenticated;
     },
 
     _handleError : function(error) {
