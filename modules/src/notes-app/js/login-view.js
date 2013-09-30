@@ -1,7 +1,9 @@
 Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
+    _app : null,
     _dropboxProxy : null,
 
     initializer : function() {
+        this._app = Y.di.inject('App');
         this._dropboxProxy = Y.di.inject('DropboxProxy');
     },
 
