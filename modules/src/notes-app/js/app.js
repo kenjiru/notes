@@ -26,11 +26,7 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
     handleRoot : function(req) {
         console.log('root');
 
-        if (this._dropboxProxy.isAuthenticated()) {
-            this.showView('search');
-        } else {
-            this.showView('login');
-        }
+        this.showView('login');
     },
 
     handleLogin : function(req) {
