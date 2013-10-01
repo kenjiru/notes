@@ -53,10 +53,6 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
         this._ui.logoutButton.on('click', this._logout, this);
     },
 
-    _setMessage : function(msg) {
-        this._ui.message.set('text', msg);
-    },
-
     _uiShowChecking : function() {
         this._setMessage('Checking login status..');
     },
@@ -77,16 +73,6 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
         this._setMessage('Error during authentication!');
     },
 
-    _login : function() {
-        this._dropboxProxy.authenticate(function(ev){
-            if (ev.authenticated) {
-                this._uiShowLogout();
-            } else {
-                this._uiShowLoginError();
-            }
-        }, this);
-    },
-
     _uiShowLogoutSuccess : function() {
         this._setMessage('You\'ve been logged out successfully!');
         this._ui.logoutPanel.hide();
@@ -95,6 +81,20 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
 
     _uiShowLogoutFail : function() {
         this._setMessage('Failed to logout!');
+    },
+
+    _setMessage : function(msg) {
+        this._ui.message.set('text', msg);
+    },
+
+    _login : function() {
+        this._dropboxProxy.authenticate(function(ev){
+            if (ev.authenticated) {
+                this._uiShowLogout();
+            } else {
+                this._uiShowLoginError();
+            }
+        }, this);
     },
 
     _logout : function() {
