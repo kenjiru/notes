@@ -19,12 +19,13 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
     },
 
     render : function() {
-        var template = "<div id='message'>Checking login status..</div>" +
-            "<div id='login-panel' class='panel'>" +
-            "   <input id='login-button' value='Login' type='button'/>" +
-            "</div>",
-            contentNode = Y.Node.create(template),
-            container = this.get('container');
+        var container = this.get('container'),
+            template = "" +
+                "<div id='message'>Checking login status..</div>" +
+                "<div id='login-panel' class='panel'>" +
+                "   <input id='login-button' value='Login' type='button'/>" +
+                "</div>",
+            contentNode = Y.Node.create(template);
 
         this._ui = {
             message : contentNode.one('#message'),
@@ -60,6 +61,10 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
     _uiShowLoginSuccess : function() {
         this._setMessage('You\'ve been logged in successfully!');
         this._ui.loginPanel.hide();
+
+        Y.later(300, this, function() {
+            this._app.navigate('search');
+        });
     },
 
     _uiShowLoginError : function() {
