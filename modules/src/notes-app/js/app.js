@@ -1,12 +1,14 @@
-console.log('notes-app loaded!');
-
 Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
     _dropboxProxy : null,
 
     views : {
         'login' : {
             type : Y.notes.LoginView,
-            preserve : true
+            preserve : false
+        },
+        'logout' : {
+            type : Y.notes.LogoutView,
+            preserve : false
         },
         'search' : {
             type : Y.notes.SearchView,
@@ -15,7 +17,7 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
         'note' : {
             type : Y.notes.NoteView,
             preserve : false,
-            parent : 'home'
+            parent : 'search'
         }
     },
 
@@ -32,6 +34,11 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
     handleLogin : function(req) {
         console.log('login');
         this.showView('login');
+    },
+
+    handleLogout : function(req) {
+        console.log('logout');
+        this.showView('logout');
     },
 
     handleSearch : function(req) {
@@ -57,6 +64,9 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
                 }, {
                     path : '/login',
                     callbacks : 'handleLogin'
+                }, {
+                    path : '/logout',
+                    callbacks : 'handleLogout'
                 }, {
                     path : '/search',
                     callbacks : 'handleSearch'

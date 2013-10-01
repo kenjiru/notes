@@ -4,6 +4,7 @@
         "notes-app": {
             "jsfiles": [
                 "login-view.js",
+                "logout-view.js",
                 "search-view.js",
                 "note-view.js",
                 "app.js"
@@ -12,6 +13,7 @@
                 "use" : [
                     "app",
                     "button",
+                    "datatable",
                     "dependency-injection"
                 ]
             }
