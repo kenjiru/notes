@@ -1,0 +1,21 @@
+.yui3-search-view .header #logout {
+    float: left;
+}
+
+.yui3-search-view .header #user-info {
+    float: right;
+}
+
+.yui3-search-view .header:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.yui3-search-view #search-input {
+    width: auto;
+}
+
+.yui3-datatable-table {
+    width: 100%;
+}
