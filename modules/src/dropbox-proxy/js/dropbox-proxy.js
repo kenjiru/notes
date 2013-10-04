@@ -52,6 +52,10 @@ Y.namespace('notes').DropboxProxy = Y.Base.create('dropboxProxy', Y.Base, [], {
         });
     },
 
+    readFile : function(fileName, callback) {
+        this._client.readFile(fileName, callback);
+    },
+
     _handleError : function(error) {
         console.log(error);
     }
