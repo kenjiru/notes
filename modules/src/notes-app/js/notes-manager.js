@@ -77,7 +77,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     },
 
     _getNotePath : function(noteInfo) {
-        return '/0/' + noteInfo.rev + '/' + noteInfo.id + '.note';
+        return '/' + Math.floor(noteInfo.rev / 100) + '/' + noteInfo.rev + '/' + noteInfo.id + '.note';
     }
 });
 
