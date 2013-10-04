@@ -6,6 +6,10 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
     initializer : function() {
         this._app = Y.di.inject('App');
         this._dropboxProxy = Y.di.inject('DropboxProxy');
+
+        var notesManager = new Y.notes.NotesManager();
+
+        notesManager.readNotes(Y.bind(this._onNotesRead, this));
     },
 
     render : function() {
@@ -30,7 +34,6 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
         container.addClass(className);
 
         this._createDataTable();
-        this._populateDataTable();
 
         return this;
     },
@@ -38,17 +41,14 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
     _createDataTable : function() {
         var container = this.get('container'),
             dataTable = new Y.DataTable({
-                columns: ["name", "date"]
+                columns: ["title", "last-change-date"]
             });
         dataTable.render(container.one('#data-table-panel'));
 
         this._dataTable = dataTable;
     },
 
-    _populateDataTable : function() {
-        this._dataTable.addRows([
-            { name : 'Foo', date : '12 Jun 2013' },
-            { name : 'Bar', date : '04 Oct 2013' }
-        ]);
+    _onNotesRead : function(notes) {
+        this._dataTable.addRows(notes);
     }
 });
