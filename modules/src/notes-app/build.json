@@ -8,6 +8,7 @@
                 "search-view.js",
                 "note-view.js",
                 "manifest-file.js",
+                "notes-manager.js",
                 "app.js"
             ],
             "config" : {
