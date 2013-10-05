@@ -2,12 +2,16 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
     _app : null,
     _dropboxProxy : null,
     _dataTable : null,
+    _dataTableModel : null,
 
     initializer : function() {
         this._app = Y.di.inject('App');
         this._dropboxProxy = Y.di.inject('DropboxProxy');
+        this._dataTableModel = new Y.ModelList();
 
-        var notesManager = new Y.notes.NotesManager();
+        var notesManager = new Y.notes.NotesManager({
+            model : this._dataTableModel
+        });
 
         notesManager.readNotes(Y.bind(this._onNotesRead, this));
     },
@@ -41,7 +45,8 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
     _createDataTable : function() {
         var container = this.get('container'),
             dataTable = new Y.DataTable({
-                columns: ["title", "last-change-date"]
+                columns : ["title", "last-change-date"],
+                data : this._dataTableModel
             });
         dataTable.render(container.one('#data-table-panel'));
 
