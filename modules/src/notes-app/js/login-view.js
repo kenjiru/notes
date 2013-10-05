@@ -66,7 +66,7 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
         this._ui.loginPanel.hide();
 
         Y.later(300, this, function() {
-            this._app.navigate('/' + redirectUrl || this._defaultUrl);
+            this._app.navigate('/' + (redirectUrl || this._defaultUrl));
         });
     },
 
