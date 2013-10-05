@@ -2,6 +2,7 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
     _app : null,
     _dropboxProxy : null,
     _ui : null,
+    _defaultUrl : 'search',
 
     initializer : function() {
         this._app = Y.di.inject('App');
@@ -59,11 +60,13 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
     },
 
     _uiShowLoginSuccess : function() {
+        var redirectUrl = this.get('redirectUrl');
+
         this._setMessage('You\'ve been logged in successfully!');
         this._ui.loginPanel.hide();
 
         Y.later(300, this, function() {
-            this._app.navigate('search');
+            this._app.navigate('/' + redirectUrl || this._defaultUrl);
         });
     },
 
@@ -83,5 +86,9 @@ Y.namespace('notes').LoginView = Y.Base.create('loginView', Y.View, [], {
                 this._uiShowLoginError();
             }
         }, this);
+    }
+}, {
+    ATTRS : {
+        redirectUrl : null
     }
 });

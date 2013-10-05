@@ -1,5 +1,6 @@
 Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
     _dropboxProxy : null,
+    _redirectUrl : null,
 
     views : {
         'login' : {
@@ -33,7 +34,13 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
 
     handleLogin : function(req) {
         console.log('login');
-        this.showView('login');
+        this.showView('login', {
+            redirectUrl : this._redirectUrl
+        });
+
+        if (this._redirectUrl) {
+            this._redirectUrl = null;
+        }
     },
 
     handleLogout : function(req) {
@@ -56,7 +63,8 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
             if (ev.authenticated) {
                 this.showView(viewName);
             } else {
-                this.showView('login');
+                this._redirectUrl = viewName;
+                this.navigate('login');
             }
         }, this);
     }
