@@ -32,21 +32,21 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         for(var i=0; i<notesInfo.length; i++) {
             noteFilePath = this._getNotePath(notesInfo[i]);
 
-            this._dropboxProxy.readFile(noteFilePath, Y.bind(this._readNoteFile, this));
+            this._dropboxProxy.readFile(noteFilePath, Y.bind(this._readNoteFile, this, notesInfo[i].id));
         }
     },
 
-    _readNoteFile : function(error, data) {
+    _readNoteFile : function(noteId, error, data) {
         if (error) {
             console.log('could not read manifest file!');
             console.log(error);
             return;
         }
 
-        this._parseNoteFile(data);
+        this._parseNoteFile(noteId, data);
     },
 
-    _parseNoteFile : function(data) {
+    _parseNoteFile : function(noteId, data) {
         var xmlDoc = Y.DataType.XML.parse(data),
             rootNode = xmlDoc.childNodes[0],
             revision = rootNode.getAttribute('revision'),
@@ -66,6 +66,8 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
                 }
             }
         }
+
+        note['id'] = noteId;
 
         this._notesModel.add(note);
         this._notesRead++;
