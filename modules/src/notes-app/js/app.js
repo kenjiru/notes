@@ -43,12 +43,22 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
 
     handleSearch : function(req) {
         console.log('search');
-        this.showView('search');
+        this._showViewIfAuthenticated('search');
     },
 
     handleNote : function(req) {
         console.log('note');
-        this.showView('note');
+        this._showViewIfAuthenticated('note');
+    },
+
+    _showViewIfAuthenticated : function(viewName) {
+        this._dropboxProxy.isAuthenticated(function(ev){
+            if (ev.authenticated) {
+                this.showView(viewName);
+            } else {
+                this.showView('login');
+            }
+        }, this);
     }
 }, {
     ATTRS : {
