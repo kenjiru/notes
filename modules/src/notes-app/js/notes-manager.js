@@ -1,16 +1,14 @@
 var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     _dropboxProxy : null,
     _callback : null,
-    _notes : null,
     _notesLength : null,
     _notesRead : null,
-    _model : null,
+    _notesModel : null,
 
     initializer : function(config) {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
-        this._notes = [];
+        this._notesModel = Y.di.inject('NotesModel');
         this._notesRead = 0;
-        this._model = config.model;
     },
 
     readNotes : function(callback) {
@@ -69,11 +67,11 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
             }
         }
 
-        this._model.add(note);
+        this._notesModel.add(note);
         this._notesRead++;
 
         if (this._notesRead == this._notesLength) {
-            this._callback.call(null, this._notes);
+            this._callback.call(null);
         }
     },
 
