@@ -41,7 +41,22 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
     _createDataTable : function() {
         var container = this.get('container'),
             dataTable = new Y.DataTable({
-                columns : ["title", "last-change-date"],
+                recordType : [ "id", "title", "last-change-date", "create-date" ],
+                columns : [
+                    {
+                        key: 'title',
+                        label: 'Label',
+                        formatter : function(o) {
+                            var template = "<a href='/note/{id}'>{title}</a>";
+
+                            return Y.substitute(template, o.data);
+                        },
+                        allowHTML : true
+                    }, {
+                        key : 'last-change-date',
+                        label : 'Last changed'
+                    }
+                ],
                 data : Y.di.inject('NotesModel')
             });
         dataTable.render(container.one('#data-table-panel'));
@@ -49,7 +64,7 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
         this._dataTable = dataTable;
     },
 
-    _onNotesRead : function(notes) {
-        this._dataTable.addRows(notes);
+    _onNotesRead : function() {
+        console.log('All notes read!');
     }
 });
