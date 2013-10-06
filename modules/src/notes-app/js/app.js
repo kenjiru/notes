@@ -55,13 +55,15 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
 
     handleNote : function(req) {
         console.log('note');
-        this._showViewIfAuthenticated('note');
+        this._showViewIfAuthenticated('note', {
+            id :req.params.id
+        });
     },
 
-    _showViewIfAuthenticated : function(viewName) {
+    _showViewIfAuthenticated : function(viewName, viewConfig) {
         this._dropboxProxy.isAuthenticated(function(ev){
             if (ev.authenticated) {
-                this.showView(viewName);
+                this.showView(viewName, viewConfig);
             } else {
                 this._redirectUrl = viewName;
                 this.navigate('login');
@@ -89,7 +91,7 @@ Y.namespace('notes').App = Y.Base.create('app', Y.App, [], {
                     path : '/search',
                     callbacks : 'handleSearch'
                 } , {
-                    path : '/note',
+                    path : '/note/:id',
                     callbacks : 'handleNote'
                 }
             ]
