@@ -51,7 +51,8 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
             rootNode = xmlDoc.childNodes[0],
             revision = rootNode.getAttribute('revision'),
             note = {},
-            node, nodeName;
+            node, nodeName,
+            noteContentNode;
 
         for(var i=0; i<rootNode.childNodes.length; i++) {
             node = rootNode.childNodes[i];
@@ -62,7 +63,12 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
                 if (nodeName !== 'text') {
                     note[nodeName] = node.textContent;
                 } else {
-                    note[nodeName] = Y.DataType.XML.format(node.childNodes[0]);
+                    noteContentNode = node.childNodes[0];
+                    // we add the namespaces here, as we might need them later
+                    noteContentNode.setAttribute('xmlns:size', 'http://beatniksoftware.com/tomboy/size');
+                    noteContentNode.setAttribute('xmlns:link', 'http://beatniksoftware.com/tomboy/link');
+
+                    note[nodeName] = Y.DataType.XML.format(noteContentNode);
                 }
             }
         }
