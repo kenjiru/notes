@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="note2html.xsl" version="1.0"?>
+
+<note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
+    <title>Morbi rutrum libero</title>
+    <text xml:space="preserve"><note-content version="0.1">Morbi rutrum libero
+
+Et <bold>justo</bold> condimentum, <italic>quis blandit</italic> nulla <strikethrough>ultricies</strikethrough>, donec <highlight>sed nibh</highlight> ultrices, <monospace>mattis sem</monospace> a, rhoncus metus.
+
+Sed <size:small>consectetur nisi</size:small> augue, <size:large>eu semper</size:large> elit <size:huge>scelerisque</size:huge> sit amet.
+
+<list><list-item dir="ltr">Phasellus suscipit interdum magna
+</list-item><list-item dir="ltr">At auctor neque fringilla et. </list-item></list></note-content></text>
+    <last-change-date>2013-10-06T23:00:52.5663410+02:00</last-change-date>
+    <last-metadata-change-date>2013-10-06T23:00:52.5678490+02:00</last-metadata-change-date>
+    <create-date>2013-10-06T22:57:49.6493080+02:00</create-date>
+    <cursor-position>233</cursor-position>
+    <selection-bound-position>233</selection-bound-position>
+    <width>450</width>
+    <height>360</height>
+    <x>0</x>
+    <y>0</y>
+    <open-on-startup>False</open-on-startup>
+</note>
