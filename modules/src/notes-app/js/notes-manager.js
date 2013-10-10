@@ -60,15 +60,13 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
             if (node.nodeType == 1) {
                 nodeName = node.nodeName;
 
-                if (nodeName !== 'text') {
-                    note[nodeName] = node.textContent;
-                } else {
+                if (nodeName === 'text') {
                     noteContentNode = node.childNodes[0];
                     // we add the namespaces here, as we might need them later
-                    noteContentNode.setAttribute('xmlns:size', 'http://beatniksoftware.com/tomboy/size');
-                    noteContentNode.setAttribute('xmlns:link', 'http://beatniksoftware.com/tomboy/link');
 
                     note[nodeName] = Y.DataType.XML.format(noteContentNode);
+                } else {
+                    note[nodeName] = node.textContent;
                 }
             }
         }
@@ -85,6 +83,11 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
 
     _getNotePath : function(noteInfo) {
         return '/' + Math.floor(noteInfo.rev / 100) + '/' + noteInfo.rev + '/' + noteInfo.id + '.note';
+    },
+
+    getById : function(id) {
+        var note = this._notesModel.getById(id),
+            text = note['text'];
     }
 }, {
     ATTRS : {
