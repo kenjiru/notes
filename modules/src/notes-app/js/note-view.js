@@ -1,10 +1,12 @@
 Y.namespace('notes').NoteView = Y.Base.create('noteView', Y.View, [], {
     _notesModel : null,
+    _noteSerializer : null,
     _titleNode : null,
     _contentNode : null,
 
     initializer : function(config) {
         this._notesModel = Y.di.inject('NotesModel');
+        this._noteSerializer = Y.di.inject('NoteSerializer');
     },
 
     render : function() {
@@ -28,11 +30,14 @@ Y.namespace('notes').NoteView = Y.Base.create('noteView', Y.View, [], {
 
     _loadNote : function() {
         var id = this.get('id'),
-            note = this._notesModel.getById(id);
+            note = this._notesModel.getById(id),
+            text;
 
         if (note) {
-            this._titleNode.set('text', note.get('title'));
-            this._contentNode.set('text', note.get('text'));
+            text = note.get('text');
+            text = this._noteSerializer.convertToHtml(text);
+
+            this._contentNode.appendChild(Y.Node.create(text));
         }
     }
 }, {
