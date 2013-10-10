@@ -3,6 +3,7 @@
     "builds": {
         "notes-app": {
             "jsfiles": [
+                "note-serializer.js",
                 "login-view.js",
                 "logout-view.js",
                 "search-view.js",

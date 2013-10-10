@@ -1,76 +1,73 @@
-var NoteSerializer = {
+var NoteSerializer = Y.Base.create('noteSerializer', Y.Base, [], {
     _nodeMap : {
+        'note-content' : '',
         bold : 'b',
         italic : 'i',
         strikethrough : 'strike',
         highlight : {
             'element' : 'span',
-            'background' : 'yellow'
+            'style' : 'background: yellow'
         },
-        small : {
+        'size:small' : {
             'element' : 'span',
-            'font-size' : 'small'
+            'style' : 'font-size: small'
         },
-        large : {
+        'size:large' : {
             'element' : 'span',
-            'font-size' : 'large'
+            'style' : 'font-size: large'
         },
-        huge : {
+        'size:huge' : {
             'element' : 'span',
-            'font-size' : 'xx-large'
+            'style' : 'font-size: xx-large'
+        },
+        'list' : 'ul',
+        'list-item' : 'li'
+    },
+
+    convertToHtml : function(text) {
+        text = this._replaceTitle(text);
+        text = this._replaceNewLines(text);
+        text = this._replaceAllTags(text);
+
+        return text;
+    },
+
+    _replaceTitle : function(text) {
+        text = text.replace(/<(\/)?note-content[^>]*>/g,'');
+        return text.replace(/^(.*)[\r\n]+(.*)/, "<h1>$1</h1>$2");
+    },
+
+    _replaceNewLines : function(text) {
+        return text.replace(/[\r\n]+/g, '<br/>');
+    },
+
+    _replaceAllTags : function(text) {
+        for(var key in this._nodeMap) {
+            text = this._replaceTag(text, key, this._nodeMap[key]);
         }
+
+        return text;
     },
 
-    getHtml : function(noteText) {
-        var xmlDoc = new DOMParser().parseFromString(noteText, "text/xml"),
-            rootNode = xmlDoc.childNodes[0],
-            fragment = document.createDocumentFragment(),
-            paragraph = document.createElement('p'),
-            node,
-            nodeValue,
-            textNode,
-            newLinePos;
+    _replaceTag : function(text, initialTag, finalTag) {
+        var bothTags = "<(\/)?" + initialTag + "( [^>]*)*>",
+            startTag = "<" + initialTag + "( [^>]*)*>",
+            endTag = "</" + initialTag + ">",
+            regExp;
 
-        for (var i=1; i<rootNode.childNodes.length; i++) {
-            node = rootNode.childNodes[i];
+        if (typeof finalTag == 'string') {
+            regExp = new RegExp(bothTags, 'g');
+            text = text.replace(regExp, "<$1" + finalTag + ">");
+        } else {
+            regExp = new RegExp(startTag, 'g');
+            text = text.replace(regExp, "<" + finalTag.element + " style='" + finalTag.style + "'>");
 
-            if (node.nodeType == 3) {
-                nodeValue = node.nodeValue;
-                newLinePos = nodeValue.indexOf('\n');
-
-                if (newLinePos > -1) {
-                    this._appendTextNode(paragraph, nodeValue.substring(0, newLinePos));
-
-                    fragment.appendChild(paragraph);
-
-                    paragraph = this._newParagraph();
-                    this._appendTextNode(paragraph, nodeValue.substring(newLinePos));
-                } else {
-                    this._appendTextNode(paragraph, nodeValue);
-                }
-            } else {
-                if (node.nodeName === 'list') {
-                    if (paragraph.childNodes.length > 0) {
-                        fragment.appendChild(paragraph);
-
-                        paragraph = document.createElement('p');
-                    }
-
-                    fragment.appendChild(node);
-                } else {
-                    paragraph.appendChild(node);
-                }
-            }
+            regExp = new RegExp(endTag, 'g');
+            text = text.replace(regExp, "</" + finalTag.element + ">");
         }
-    },
 
-    _appendTextNode : function(node, text) {
-        var textNode = document.createTextNode(text);
-
-        node.appendChild(textNode);
-    },
-
-    _newParagraph : function() {
-        return document.createElement('p');
+        return text;
     }
-};
+});
+
+Y.namespace('notes').NoteSerializer = NoteSerializer;
