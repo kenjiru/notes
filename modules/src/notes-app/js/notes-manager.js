@@ -10,13 +10,13 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     _notesModel : null,
     _notesLength : null,
     _notesRead : null,
-    _state : null,
+    _internalState : null, // _state is used by Y.Base
 
     initializer : function(config) {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
         this._notesModel = new Y.ModelList();
         this._notesRead = 0;
-        this._state = State.UNKNOWN;
+        this._internalState = State.UNKNOWN;
 
         this.publish('noteRead');
         this.publish('allNotesRead');
@@ -27,7 +27,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
      * Reads the notes listed in the manifest file.
      */
     readNotes : function() {
-        if (this._state !== State.LOADED) {
+        if (this._internalState !== State.LOADED) {
             this._readManifestFile();
         }
     },
@@ -37,7 +37,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
      */
     invalidateNotes : function() {
         this._notesModel.reset();
-        this._state = State.UNKNOWN;
+        this._internalState = State.UNKNOWN;
 
         this._notesLength = null;
         this._notesRead = 0;
@@ -54,13 +54,13 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
             noteFilePath;
 
         if (error) {
-            this._state = State.ERROR;
+            this._internalState = State.ERROR;
             this.fire('error');
 
             return;
         }
 
-        this._state = State.LOADING;
+        this._internalState = State.LOADING;
 
         notesInfo = manifest.notes;
         this._notesLength = notesInfo.length;
@@ -118,7 +118,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         });
 
         if (this._notesRead == this._notesLength) {
-            this._state = State.LOADED;
+            this._internalState = State.LOADED;
             this.fire('allNotesRead');
         }
     },
@@ -144,7 +144,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
      * @returns {State} The current state.
      */
     getState : function() {
-        return this._state;
+        return this._internalState;
     }
 }, {
     ATTRS : {
