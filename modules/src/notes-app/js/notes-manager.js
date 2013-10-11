@@ -3,11 +3,13 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     _notesLength : null,
     _notesRead : null,
     _notesModel : null,
+    _state : null,
 
     initializer : function(config) {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
         this._notesModel = Y.di.inject('NotesModel');
         this._notesRead = 0;
+        this._state = State.UNKNOWN;
 
         this.publish('noteRead');
         this.publish('allNotesRead');
@@ -23,9 +25,18 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         manifestFile.readFile('/manifest.xml', Y.bind(this._onReadManifest, this));
     },
 
-    _onReadManifest : function(manifest) {
+    _onReadManifest : function(manifest, error) {
         var notesInfo,
             noteFilePath;
+
+        if (error) {
+            this._state = State.ERROR;
+            this.fire('error');
+
+            return;
+        }
+
+        this._state = State.LOADING;
 
         notesInfo = manifest.notes;
         this._notesLength = notesInfo.length;
@@ -41,6 +52,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         if (error) {
             console.log('could not read manifest file!');
             console.log(error);
+
             return;
         }
 
@@ -82,6 +94,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         });
 
         if (this._notesRead == this._notesLength) {
+            this._state = State.ALL_LOADED;
             this.fire('allNotesRead');
         }
     },
@@ -93,11 +106,22 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     getById : function(id) {
         var note = this._notesModel.getById(id),
             text = note['text'];
+    },
+
+    getState : function() {
+        return this._state;
     }
 }, {
     ATTRS : {
         model : null
     }
 });
+
+var State = {
+    UNKNOWN : 'unknown',
+    LOADING : 'loading',
+    ALL_LOADED : 'all_loaded',
+    ERROR : 'error'
+};
 
 Y.namespace('notes').NotesManager = NotesManager;
