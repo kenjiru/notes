@@ -1,22 +1,46 @@
+var State = {
+    UNKNOWN : 'unknown',
+    LOADING : 'loading',
+    LOADED : 'loaded',
+    ERROR : 'error'
+};
+
 var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     _dropboxProxy : null,
+    _notesModel : null,
     _notesLength : null,
     _notesRead : null,
-    _notesModel : null,
     _state : null,
 
     initializer : function(config) {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
-        this._notesModel = Y.di.inject('NotesModel');
+        this._notesModel = new Y.ModelList();
         this._notesRead = 0;
         this._state = State.UNKNOWN;
 
         this.publish('noteRead');
         this.publish('allNotesRead');
+        this.publish('error');
     },
 
+    /**
+     * Reads the notes listed in the manifest file.
+     */
     readNotes : function() {
-        this._readManifestFile();
+        if (this._state !== State.LOADED) {
+            this._readManifestFile();
+        }
+    },
+
+    /**
+     * Invalidates the notes and resets the state.
+     */
+    invalidateNotes : function() {
+        this._notesModel.reset();
+        this._state = State.UNKNOWN;
+
+        this._notesLength = null;
+        this._notesRead = 0;
     },
 
     _readManifestFile : function() {
@@ -94,7 +118,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         });
 
         if (this._notesRead == this._notesLength) {
-            this._state = State.ALL_LOADED;
+            this._state = State.LOADED;
             this.fire('allNotesRead');
         }
     },
@@ -103,25 +127,31 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         return '/' + Math.floor(noteInfo.rev / 100) + '/' + noteInfo.rev + '/' + noteInfo.id + '.note';
     },
 
-    getById : function(id) {
-        var note = this._notesModel.getById(id),
-            text = note['text'];
+    getNotesModel : function() {
+        return this._notesModel;
     },
 
+    /**
+     * Searches for the note id in the list of notes.
+     * @param id Note id to search for.
+     */
+    getById : function(id) {
+        return this._notesModel.getById(id);
+    },
+
+    /**
+     * Exposes the internal state.
+     * @returns {State} The current state.
+     */
     getState : function() {
         return this._state;
     }
 }, {
     ATTRS : {
         model : null
-    }
-});
+    },
 
-var State = {
-    UNKNOWN : 'unknown',
-    LOADING : 'loading',
-    ALL_LOADED : 'all_loaded',
-    ERROR : 'error'
-};
+    State : State
+});
 
 Y.namespace('notes').NotesManager = NotesManager;
