@@ -20,6 +20,8 @@ var ManifestFile = Y.Base.create('manifestFile', Y.Base, [], {
         if (error) {
             console.log('could not read manifest file!');
             console.log(error);
+
+            this._callback.call(null, null, error);
             return;
         }
 
