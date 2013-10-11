@@ -1,6 +1,5 @@
 var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     _dropboxProxy : null,
-    _callback : null,
     _notesLength : null,
     _notesRead : null,
     _notesModel : null,
@@ -9,11 +8,12 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
         this._notesModel = Y.di.inject('NotesModel');
         this._notesRead = 0;
+
+        this.publish('noteRead');
+        this.publish('allNotesRead');
     },
 
-    readNotes : function(callback) {
-        this._callback = callback;
-
+    readNotes : function() {
         this._readManifestFile();
     },
 
@@ -24,9 +24,10 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     },
 
     _onReadManifest : function(manifest) {
-        var notesInfo = manifest.notes,
+        var notesInfo,
             noteFilePath;
 
+        notesInfo = manifest.notes;
         this._notesLength = notesInfo.length;
 
         for(var i=0; i<notesInfo.length; i++) {
@@ -70,14 +71,18 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
                 }
             }
         }
-
+        // save the id of the note
         note['id'] = noteId;
 
         this._notesModel.add(note);
         this._notesRead++;
 
+        this.fire('noteRead', {
+            note : note
+        });
+
         if (this._notesRead == this._notesLength) {
-            this._callback.call(null);
+            this.fire('allNotesRead');
         }
     },
 
