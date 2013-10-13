@@ -9,6 +9,7 @@
                 "search-view.js",
                 "note-view.js",
                 "manifest-file.js",
+                "manifest-cache.js",
                 "notes-manager.js",
                 "app.js"
             ],
@@ -19,7 +20,8 @@
                     "datatable",
                     "substitute",
                     "dependency-injection",
-                    "datatype-xml"
+                    "datatype-xml",
+                    "gallery-storage-lite"
                 ]
             }
         }
