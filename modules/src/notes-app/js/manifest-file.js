@@ -42,7 +42,7 @@ var ManifestFile = Y.Base.create('manifestFile', Y.Base, [], {
             if (node.nodeType == 1) {
                 notesArray.push({
                     id : node.getAttribute('id'),
-                    rev : node.getAttribute('rev')
+                    revision : node.getAttribute('rev')
                 })
             }
         }
