@@ -39,7 +39,7 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
     _createDataTable : function() {
         var container = this.get('container'),
             dataTable = new Y.DataTable({
-                recordType : [ "id", "title", "last-change-date", "create-date" ],
+                recordType : [ "id", "title", "last-change-date" ],
                 columns : [
                     {
                         key: 'title',

@@ -87,7 +87,7 @@ Y.namespace('notes').NoteView = Y.Base.create('noteView', Y.View, [], {
 
     _loadNote : function() {
         var id = this.get('id'),
-            note = this._notesManager.getById(id),
+            note = this._notesManager.getNote(id),
             text;
 
         if (note) {
