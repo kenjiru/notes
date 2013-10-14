@@ -33,14 +33,14 @@ var ManifestFile = Y.Base.create('manifestFile', Y.Base, [], {
         var xmlDoc = Y.DataType.XML.parse(data),
             rootNode = xmlDoc.childNodes[0],
             revision = rootNode.getAttribute('revision'),
-            notes = [],
+            notesArray = [],
             node;
 
         for(var i=0; i<rootNode.childNodes.length; i++) {
             node = rootNode.childNodes[i];
 
             if (node.nodeType == 1) {
-                notes.push({
+                notesArray.push({
                     id : node.getAttribute('id'),
                     rev : node.getAttribute('rev')
                 })
@@ -49,7 +49,7 @@ var ManifestFile = Y.Base.create('manifestFile', Y.Base, [], {
 
         this._callback.call(null, {
             revision : revision,
-            notes : notes
+            notesArray : notesArray
         });
     }
 }, {

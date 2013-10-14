@@ -3,12 +3,11 @@ var ManifestCache = Y.Base.create('manifestCache', Y.Base, [], {
     /**
      * An object that has the following structure:
      *  - revision - manifest revision
-     *  - notes - a map of notes, with the id of the note as the key
+     *  - notesMap - a map of notes, with the id of the note as the key
      *      * revision - note revision
      *      * title - note title
      */
     _manifestObject : null,
-    _notes : null,
 
     initializer : function(config) {
         this._readFromCache();
@@ -23,7 +22,7 @@ var ManifestCache = Y.Base.create('manifestCache', Y.Base, [], {
     },
 
     addNote : function(note) {
-        this._manifestObject.notes[note.id] = {
+        this._manifestObject.notesMap[note.id] = {
             revision : note.revision,
             title : note.title
         };
@@ -38,6 +37,8 @@ var ManifestCache = Y.Base.create('manifestCache', Y.Base, [], {
     },
 
     getNoteInfo : function(id) {
-        return this._manifestObject.notes[id];
+        return this._manifestObject.notesMap[id];
     }
 });
+
+Y.namespace('notes').ManifestCache = ManifestCache;
