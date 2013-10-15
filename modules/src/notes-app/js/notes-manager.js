@@ -7,16 +7,16 @@ var State = {
 
 var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     _dropboxProxy : null,
-    _manifestCache : null,
     _notesInfoList : null,
+    _notesInfoCache : null,
     _notesLength : null,
     _notesProcessed : null,
     _internalState : null, // _state is used by Y.Base
 
     initializer : function(config) {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
-        this._manifestCache = new Y.notes.ManifestCache();
         this._notesInfoList = new Y.ModelList();
+        this._notesInfoCache = new Y.notes.NotesInfoCache();
         this._notesProcessed = 0;
         this._internalState = State.UNKNOWN;
 
@@ -72,7 +72,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     },
 
     _processNoteInfo : function(noteInfo) {
-        var cachedNoteInfo = this._manifestCache.getNoteInfo(noteInfo.id),
+        var cachedNoteInfo = this._notesInfoCache.getNoteInfo(noteInfo.id),
             noteFilePath;
 
         if (!cachedNoteInfo || cachedNoteInfo.revision !== noteInfo.revision) {
@@ -127,7 +127,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         // save the id of the note
         note['id'] = noteId;
         // add the note info to cache
-        this._manifestCache.addNoteInfo(note);
+        this._notesInfoCache.addNoteInfo(note);
 
         this._addNoteInfo(note);
     },

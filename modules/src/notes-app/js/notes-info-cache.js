@@ -1,5 +1,5 @@
-var ManifestCache = Y.Base.create('manifestCache', Y.Base, [], {
-    STORAGE_KEY : 'manifest-cache',
+var NotesInfoCache = Y.Base.create('notesInfoCache', Y.Base, [], {
+    STORAGE_KEY : 'notes-info-cache',
     /**
      * An object that has the following structure:
      *  - revision - manifest revision
@@ -78,4 +78,4 @@ var ManifestCache = Y.Base.create('manifestCache', Y.Base, [], {
     }
 });
 
-Y.namespace('notes').ManifestCache = ManifestCache;
+Y.namespace('notes').NotesInfoCache = NotesInfoCache;

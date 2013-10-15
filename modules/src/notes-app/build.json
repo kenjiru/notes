@@ -9,7 +9,7 @@
                 "search-view.js",
                 "note-view.js",
                 "manifest-file.js",
-                "manifest-cache.js",
+                "notes-info-cache.js",
                 "notes-manager.js",
                 "app.js"
             ],
