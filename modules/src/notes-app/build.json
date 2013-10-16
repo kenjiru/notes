@@ -10,6 +10,7 @@
                 "note-view.js",
                 "manifest-file.js",
                 "notes-info-cache.js",
+                "notes-cache.js",
                 "notes-manager.js",
                 "app.js"
             ],
