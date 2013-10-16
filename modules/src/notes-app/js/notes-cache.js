@@ -1,20 +1,44 @@
 var NotesCache = Y.Base.create('notesCache', Y.Base, [], {
     _dropboxProxy : null,
-    _notesMap : {},
+    _notesCache : {},
+    _notesInfoCache : null,
 
     initializer : function(config) {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
+        this._notesInfoCache = new Y.notes.NotesInfoCache();
     },
 
-    getNote : function(noteInfo, callback) {
-        var note = this._notesMap[noteInfo.id],
+    getNoteInfo : function(noteMeta, callback) {
+        var noteInfo = this._notesInfoCache.getNoteInfo(noteMeta.id);
+
+        if (noteInfo && noteInfo.version == noteMeta.version) {
+            callback.call(null, noteInfo);
+        } else {
+            this.getNote(noteMeta, Y.bind(this._returnNoteInfo, this, callback));
+        }
+    },
+
+    _returnNoteInfo : function(callback, note, error) {
+        var noteInfo = {
+            'id' : note['id'],
+            'revision' : note['revision'],
+            'title' : note['title'],
+            'last-change-date' : note['last-change-date'],
+            'hit' : true
+        };
+
+        callback.call(null, noteInfo);
+    },
+
+    getNote : function(noteMeta, callback) {
+        var note = this._notesCache[noteMeta.id],
             noteFilePath;
 
         if (note) {
             callback.call(null, note);
         } else {
-            noteFilePath = this._getNotePath(noteInfo);
-            this._dropboxProxy.readFile(noteFilePath, Y.bind(this._onReadNoteFile, this, noteInfo.id, callback));
+            noteFilePath = this._getNotePath(noteMeta);
+            this._dropboxProxy.readFile(noteFilePath, Y.bind(this._onReadNoteFile, this, noteMeta.id, callback));
         }
     },
 
@@ -33,7 +57,8 @@ var NotesCache = Y.Base.create('notesCache', Y.Base, [], {
         note['id'] = noteId;
 
         // add the note to the map
-        this._notesMap[noteId] = note;
+        this._notesCache[noteId] = note;
+        this._notesInfoCache.addNoteInfo(note);
 
         callback.call(null, note);
     },
@@ -65,8 +90,8 @@ var NotesCache = Y.Base.create('notesCache', Y.Base, [], {
         return note;
     },
 
-    _getNotePath : function(noteInfo) {
-        return '/' + Math.floor(noteInfo.revision / 100) + '/' + noteInfo.revision + '/' + noteInfo.id + '.note';
+    _getNotePath : function(noteMeta) {
+        return '/' + Math.floor(noteMeta.revision / 100) + '/' + noteMeta.revision + '/' + noteMeta.id + '.note';
     }
 });
 
