@@ -58,6 +58,7 @@ var NotesInfoCache = Y.Base.create('notesInfoCache', Y.Base, [], {
 
     addNoteInfo : function(note) {
         this._manifestObject.notesMap[note.id] = {
+            'id' : note['id'],
             'revision' : note['revision'],
             'title' : note['title'],
             'last-change-date' : note['last-change-date'],

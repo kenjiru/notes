@@ -86,12 +86,16 @@ Y.namespace('notes').NoteView = Y.Base.create('noteView', Y.View, [], {
     },
 
     _loadNote : function() {
-        var id = this.get('id'),
-            note = this._notesManager.getNote(id),
-            text;
+        var id = this.get('id');
+
+        this._notesManager.getNote(id, Y.bind(this._onGetNote, this));
+    },
+
+    _onGetNote : function(note, error) {
+        var text;
 
         if (note) {
-            text = note.get('text');
+            text = note.text;
             text = this._noteSerializer.convertToHtml(text);
 
             this._contentNode.appendChild(Y.Node.create(text));

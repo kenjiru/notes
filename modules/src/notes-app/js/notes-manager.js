@@ -9,6 +9,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     _dropboxProxy : null,
     _notesInfoList : null,
     _notesInfoCache : null,
+    _notesCache : null,
     _notesLength : null,
     _notesProcessed : null,
     _internalState : null, // _state is used by Y.Base
@@ -17,6 +18,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
         this._notesInfoList = new Y.ModelList();
         this._notesInfoCache = new Y.notes.NotesInfoCache();
+        this._notesCache = new Y.notes.NotesCache();
         this._notesProcessed = 0;
         this._internalState = State.UNKNOWN;
 
@@ -25,24 +27,10 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         this.publish('error');
     },
 
-    /**
-     * Reads the notes listed in the manifest file.
-     */
     readNotes : function() {
         if (this._internalState !== State.LOADED) {
             this._readManifestFile();
         }
-    },
-
-    /**
-     * Invalidates the notes and resets the state.
-     */
-    invalidateNotes : function() {
-        this._notesInfoList.reset();
-        this._internalState = State.UNKNOWN;
-
-        this._notesLength = null;
-        this._notesProcessed = 0;
     },
 
     _readManifestFile : function() {
@@ -72,14 +60,12 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     },
 
     _processNoteInfo : function(noteInfo) {
-        var cachedNoteInfo = this._notesInfoCache.getNoteInfo(noteInfo.id),
-            noteFilePath;
+        var cachedNoteInfo = this._notesInfoCache.getNoteInfo(noteInfo.id);
 
         if (!cachedNoteInfo || cachedNoteInfo.revision !== noteInfo.revision) {
             console.log('Note ' + noteInfo.id + ' NOT found in cache!');
 
-            noteFilePath = this._getNotePath(noteInfo);
-            this._dropboxProxy.readFile(noteFilePath, Y.bind(this._readNoteFile, this, noteInfo.id));
+            this._notesCache.getNote(noteInfo, Y.bind(this._onGetNote, this));
         } else {
             console.log('Note ' + noteInfo.id + ' found in cache!');
 
@@ -90,46 +76,16 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         }
     },
 
-    _readNoteFile : function(noteId, error, data) {
-        if (error) {
-            console.log('Could NOT read note file ' + noteId);
-            console.log(error);
-
-            return;
-        }
-
-        this._parseNoteFile(noteId, data);
-    },
-
-    _parseNoteFile : function(noteId, data) {
-        var xmlDoc = Y.DataType.XML.parse(data),
-            rootNode = xmlDoc.childNodes[0],
-            note = {},
-            node, nodeName,
-            noteContentNode;
-
-        for(var i=0; i<rootNode.childNodes.length; i++) {
-            node = rootNode.childNodes[i];
-
-            if (node.nodeType == 1) {
-                nodeName = node.nodeName;
-
-                if (nodeName === 'text') {
-                    noteContentNode = node.childNodes[0];
-                    // we add the namespaces here, as we might need them later
-
-                    note[nodeName] = Y.DataType.XML.format(noteContentNode);
-                } else {
-                    note[nodeName] = node.textContent;
-                }
-            }
-        }
-        // save the id of the note
-        note['id'] = noteId;
+    _onGetNote : function(note, error) {
         // add the note info to cache
         this._notesInfoCache.addNoteInfo(note);
 
-        this._addNoteInfo(note);
+        this._addNoteInfo({
+            'id' : note['id'],
+            'revision' : note['revision'],
+            'title' : note['title'],
+            'last-change-date' : note['last-change-date']
+        });
     },
 
     _addNoteInfo : function(noteInfo) {
@@ -147,26 +103,16 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         }
     },
 
-    _getNotePath : function(noteInfo) {
-        return '/' + Math.floor(noteInfo.revision / 100) + '/' + noteInfo.revision + '/' + noteInfo.id + '.note';
-    },
-
     getNotesModel : function() {
         return this._notesInfoList;
     },
 
-    /**
-     * Searches for the note id in the list of notes.
-     * @param id Note id to search for.
-     */
-    getNote : function(id) {
-        return this._notesInfoList.getById(id);
+    getNote : function(id, callback) {
+        var noteInfo = this._notesInfoCache.getNoteInfo(id);
+
+        return this._notesCache.getNote(noteInfo, callback);
     },
 
-    /**
-     * Exposes the internal state.
-     * @returns {State} The current state.
-     */
     getState : function() {
         return this._internalState;
     }
