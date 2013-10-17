@@ -49,6 +49,8 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
 
         this._internalState = State.LOADING;
 
+        this._notesCache.setRevision(manifest.revision);
+
         notesMeta = manifest.notesMeta;
         this._notesLength = notesMeta.length;
 
@@ -69,6 +71,8 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
         if (this._notesProcessed == this._notesLength) {
             this._internalState = State.LOADED;
             this.fire('allNotesRead');
+
+            this._notesCache.persist();
         }
     },
 
@@ -79,7 +83,7 @@ var NotesManager = Y.Base.create('notesManager', Y.Base, [], {
     getNote : function(id, callback) {
         this._notesCache.getNoteInfo({
             id : id,
-            version : null
+            revision : null
         }, Y.bind(this._returnNote, this, callback));
     },
 

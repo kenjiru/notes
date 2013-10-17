@@ -4,6 +4,7 @@ var NotesInfoCache = Y.Base.create('notesInfoCache', Y.Base, [], {
      * An object that has the following structure:
      *  - revision - manifest revision
      *  - notesMap - a map of notes, with the id of the note as the key
+     *      * id - note id
      *      * revision - note revision
      *      * title - note title
      *      * last-change-date - the date when the note was last changed
@@ -11,8 +12,9 @@ var NotesInfoCache = Y.Base.create('notesInfoCache', Y.Base, [], {
     _manifestObject : null,
 
     initializer : function(config) {
-//        this._readFromCache();
-        this._mockCache();
+//        this.resetCache();
+        this._readFromCache();
+//        this._mockCache();
     },
 
     _mockCache : function() {
@@ -48,17 +50,28 @@ var NotesInfoCache = Y.Base.create('notesInfoCache', Y.Base, [], {
                     'revision' : '3',
                     'title' : 'Morbi rutrum libero',
                     'last-change-date' : '2013-10-06T23:00:52.5663410+02:00'
+                },
+                'e8dbffcb-d7f3-4b56-a69f-78eb9b2c8ae1' : {
+                    'id' : 'e8dbffcb-d7f3-4b56-a69f-78eb9b2c8ae1',
+                    'revision' : '4',
+                    'title' : 'Sed scelerisque',
+                    'last-change-date' : '2013-09-14T23:00:52.5663410+02:00'
                 }
             }
         };
     },
 
     _readFromCache : function() {
-        this._manifestObject = Y.StorageLite.getItem(this.STORAGE_KEY, true);
-    },
+        var cachedManifest = Y.StorageLite.getItem(this.STORAGE_KEY, true);
 
-    persist : function() {
-        Y.StoreLite.setItem(this.STORAGE_KEY, this._manifestObject, true);
+        if (cachedManifest) {
+            this._manifestObject = cachedManifest;
+        } else {
+            this._manifestObject = {
+                revision : null,
+                notesMap : {}
+            };
+        }
     },
 
     addNoteInfo : function(note) {
@@ -80,7 +93,46 @@ var NotesInfoCache = Y.Base.create('notesInfoCache', Y.Base, [], {
     },
 
     getNoteInfo : function(id) {
-        return this._manifestObject.notesMap[id];
+        var noteInfo = this._manifestObject.notesMap[id];
+
+        if (noteInfo) {
+            noteInfo.hit = true;
+        }
+
+        return noteInfo;
+    },
+
+    persist : function() {
+        this._cleanUp();
+        this._persistCache();
+    },
+
+    _cleanUp : function() {
+        var notesInfoMap = this._manifestObject.notesMap,
+            noteInfo;
+
+        for (var noteId in notesInfoMap) {
+            if (notesInfoMap.hasOwnProperty(noteId)) {
+                noteInfo = notesInfoMap[noteId];
+
+                if (!noteInfo.hit) {
+                    console.log('note with id: ' + noteInfo.id + ' title: ' + noteInfo.title + ' removed from cache!');
+
+                    delete notesInfoMap[noteId];
+                }
+            }
+        }
+    },
+
+    _persistCache : function() {
+        console.log('object to be persisted: ');
+        console.log(this._manifestObject);
+
+        Y.StorageLite.setItem(this.STORAGE_KEY, this._manifestObject, true);
+    },
+
+    resetCache : function() {
+        Y.StorageLite.setItem(this.STORAGE_KEY, null);
     }
 });
 
