@@ -1,5 +1,6 @@
 var ManifestFile = Y.Base.create('manifestFile', Y.Base, [], {
     _dropboxProxy : null,
+    _manifestObject : null,
 
     initializer : function(config) {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
@@ -24,24 +25,39 @@ var ManifestFile = Y.Base.create('manifestFile', Y.Base, [], {
         var xmlDoc = Y.DataType.XML.parse(data),
             rootNode = xmlDoc.childNodes[0],
             revision = rootNode.getAttribute('revision'),
-            notesMeta = [],
-            node;
+            notesMeta = {},
+            notesLength = 0,
+            node, noteId,
+            manifestObject;
 
         for(var i=0; i<rootNode.childNodes.length; i++) {
             node = rootNode.childNodes[i];
 
             if (node.nodeType == 1) {
-                notesMeta.push({
-                    id : node.getAttribute('id'),
+                noteId = node.getAttribute('id');
+
+                notesMeta[noteId] = {
+                    id : noteId,
                     revision : node.getAttribute('rev')
-                })
+                };
+
+                notesLength++;
             }
         }
 
-        callback.call(null, {
+        manifestObject = {
             revision : revision,
-            notesMeta : notesMeta
-        });
+            notesMeta : notesMeta,
+            notesLength : notesLength
+        };
+
+        this._manifestObject = manifestObject;
+
+        callback.call(null, manifestObject);
+    },
+
+    getManifest : function() {
+        return this._manifestObject;
     }
 }, {
     ATTRS : {
