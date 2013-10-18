@@ -6,8 +6,12 @@ var ManifestFile = Y.Base.create('manifestFile', Y.Base, [], {
         this._dropboxProxy = Y.di.inject('DropboxProxy');
     },
 
-    readFile : function(file, callback) {
-        this._dropboxProxy.readFile(file, Y.bind(this._readManifestFile, this, callback));
+    getManifest : function(callback) {
+        if (this._manifestObject) {
+            callback.call(null, this._manifestObject);
+        } else {
+            this._dropboxProxy.readFile('/manifest.xml', Y.bind(this._readManifestFile, this, callback));
+        }
     },
 
     _readManifestFile : function(callback, error, data) {
@@ -54,10 +58,6 @@ var ManifestFile = Y.Base.create('manifestFile', Y.Base, [], {
         this._manifestObject = manifestObject;
 
         callback.call(null, manifestObject);
-    },
-
-    getManifest : function() {
-        return this._manifestObject;
     }
 }, {
     ATTRS : {
