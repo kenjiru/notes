@@ -7,7 +7,7 @@ Y.namespace('notes').SearchView = Y.Base.create('searchView', Y.View, [], {
         this._app = Y.di.inject('App');
         this._notesManager = Y.di.inject('NotesManager');
 
-        this._notesManager.readNotes();
+        this._notesManager.createNotesInfoList();
     },
 
     render : function() {
